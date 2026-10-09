@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Audio Sync Countdown</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="flash"></div>
+
+  <main class="container">
+    <h1>Audio Sync Countdown</h1>
+    <p id="clockState" class="muted">Syncing clock…</p>
+
+    <div id="number">10</div>
+    <p id="status" class="muted">Tap anywhere on the page, then click "Arm Countdown" when ready.</p>
+    <p id="timecode" class="timecode"></p>
+
+    <div class="controls">
+      <button id="armBtn" class="btn primary">Arm Countdown (10s)</button>
+      <button id="testToneBtn" class="btn secondary">Test Tone</button>
+    </div>
+
+    <div class="volume-row">
+      <label for="volume">Tone volume</label>
+      <input id="volume" type="range" min="0" max="1" step="0.05" value="0.8" />
+    </div>
+
+    <details class="help">
+      <summary>How this works</summary>
+      <ul>
+        <li>Every open browser syncs its clock against Firebase's server clock (<code>.info/serverTimeOffset</code>), correcting for local clock drift.</li>
+        <li>Clicking <strong>Arm Countdown</strong> on any device (the "director") computes a future target instant and broadcasts just that timestamp — not a "play now" signal.</li>
+        <li>Every connected browser independently counts down to that same absolute instant using its own synced clock, and schedules the tone against the Web Audio hardware clock ahead of time.</li>
+        <li>Because the trigger is a future timestamp, normal network latency in delivering it (well under the 10s window) does not affect when the tone actually plays.</li>
+        <li>Sound is mandatory and unlocks automatically on your first tap/click/keypress anywhere on the page (required once per device by browser autoplay rules) — then have one person click "Arm Countdown".</li>
+        <li>When the tone fires, each device shows the exact synced wall-clock time it fired at — compare that timecode across devices to confirm they're lined up.</li>
+      </ul>
+    </details>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
